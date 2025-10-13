@@ -40,4 +40,5 @@ git push origin Issue#4
 
 8. **Merge Na Main**
    - Faça o Merge se possível, caso dê conflito, corrija-os na sua branch e tente novamente.  
-   - A Branch e a Issue serão automaticamente deletadas se não houverem erros.
+   - A Branch será automaticamente deletada  
+   - A Issue deve ser fechada manualmente com uma descrição breve do que foi feito.  
