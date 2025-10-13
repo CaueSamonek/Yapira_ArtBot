@@ -20,17 +20,15 @@ git pull
    `git checkout -b Issue#4`
 
 4. **Implemente suas modificações**  
-   - Faça somente aquilo que a issue propõe para manter os commits/branches bem separados.
+   - Faça somente aquilo que a issue propõe para manter commits e branches bem separados.
 
 5. **Adicione e registre suas mudanças com mensagens claras e curtas**  
 ```bash
-git checkout -b Issue#4
 git add .  
 git commit -m "Adicionado tutorial de desenvolvimento #4"
 ```
 
 6. **Envie sua branch para o repositório remoto**  
-   - Crie uma branch com o nome no formato `Issue#<número>`:  
 ```bash
 git push origin Issue#4
 ```
