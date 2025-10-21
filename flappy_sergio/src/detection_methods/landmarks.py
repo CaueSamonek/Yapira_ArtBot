@@ -1,7 +1,7 @@
-import cv2 # camera e manipulacao de imagem
+import cv2 #camera e manipulacao de imagem
 import mediapipe as mp # landmarks do corpo
 
-cap = cv2.VideoCapture(0) # camera
+cap = cv2.VideoCapture(0)
 
 #variaveis para deteccao do corpo
 mp_pose = mp.solutions.pose
@@ -13,7 +13,7 @@ pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 line_y = 20 # porcentagem de altura do pulo em relacao a altura dos frames
 jumping = False
 jump_count = 0
-
+i=0
 while True:
     ret, frame = cap.read()
     if not ret:
