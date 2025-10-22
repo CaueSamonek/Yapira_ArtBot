@@ -34,9 +34,6 @@ def wait_jump_signal():
             l_foot_y = int(results.pose_landmarks.landmark[mp_indexes.LEFT_FOOT_INDEX].y*h)
             r_foot_y = int(results.pose_landmarks.landmark[mp_indexes.RIGHT_FOOT_INDEX].y*h)
 
-            l_foot_y = int(results.pose_landmarks.landmark[mp_indexes.LEFT_SHOULDER].y*h)
-            r_foot_y = int(results.pose_landmarks.landmark[mp_indexes.RIGHT_SHOULDER].y*h)
-
             # ambos os pes acima da linha
             both_above = l_foot_y < line_px and r_foot_y < line_px
             if both_above and not jumping:
