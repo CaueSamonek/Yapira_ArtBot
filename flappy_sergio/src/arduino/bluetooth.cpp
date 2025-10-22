@@ -17,13 +17,13 @@
 #define ACELERACAO_MOTOR 500
 
 // Motor
-#define PIN_STEP 9
-#define PIN_DIRECTION 8
+#define PIN_STEP 3
+#define PIN_DIRECTION 2
 
 // Bluetooth
-#define BT_RX_PIN 2
-#define BT_TX_PIN 3
-#define BT_BAUD_RATE 9600;
+#define BT_RX_PIN 9
+#define BT_TX_PIN 10
+#define BT_BAUD_RATE 9600
 
 // Posicoes Limite
 #define FLOOR_LIMIT 0
@@ -55,7 +55,7 @@ void loop(){
         velocidade_atual = VELOCIDADE_MAXIMA_QUEDA;
 
     // verifica pulo
-    if (jump) {
+    if (jump_signal) {
         velocidade_atual = FORCA_PULO;
         Serial.print("Pulo! Velocidade definida para: ");
         Serial.println(velocidade_atual);
@@ -65,13 +65,13 @@ void loop(){
     long proxima_posicao = motor.currentPosition() + velocidade_atual;
 
     // mantem dentro do limite inferior
-    if (proxima_posicao < CHAO_LIMITE){
-        proxima_posicao = CHAO_LIMITE;
+    if (proxima_posicao < FLOOR_LIMIT){
+        proxima_posicao = FLOOR_LIMIT;
         velocidade_atual = 0;
     }
     // mantem dentro do limite superior
-    if (proxima_posicao > TETO_LIMITE){
-        proxima_posicao = TETO_LIMITE;
+    if (proxima_posicao > CEIL_LIMIT){
+        proxima_posicao = CEIL_LIMIT;
         velocidade_atual = 0;
     }
 
