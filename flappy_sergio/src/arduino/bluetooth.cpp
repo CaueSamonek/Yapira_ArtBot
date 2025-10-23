@@ -2,33 +2,27 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-// Valores do GPT
-//#define VELOCIDADE_MAXIMA 8000 // steps/s (≈150 RPM with 3200 steps/rev)
-//#define VELOCIDADE_MAXIMA_QUEDA -3000 // steps/s (falling speed limit)
-//#define FORCA_PULO 3000 // steps/s (initial jump velocity)
-//#define GRAVIDADE -8000 // steps/s² (gravity acceleration)
-//#define ACELERACAO_MOTOR 20000 // if using acceleration mode
 
 // Fisica
-#define VELOCIDADE_MAXIMA 1000
-#define VELOCIDADE_MAXIMA_QUEDA -1200.0
-#define FORCA_PULO 2200.0
-#define GRAVIDADE -6000.0
-#define ACELERACAO_MOTOR 500
+#define VELOCIDADE_MAXIMA_SUBIDA 4000
+#define VELOCIDADE_MAXIMA_QUEDA -4000
+#define FORCA_PULO 1000
+#define GRAVIDADE -500
 
 // Motor
 #define PIN_STEP 3
 #define PIN_DIRECTION 2
+#define VELOCIDADE_MAXIMA 4000
 
 // Bluetooth
 #define BT_RX_PIN 9
 #define BT_TX_PIN 10
 #define BT_BAUD_RATE 9600
 
-// Posicoes Limite
-#define FLOOR_LIMIT 0
-#define CEIL_LIMIT 850
-#define INITIAL_POSITION 425
+// Posicoes Limite da Barra Vertical
+#define CEIL_LIMIT 0
+#define FLOOR_LIMIT 1200
+#define INITIAL_POSITION FLOOR_LIMIT
 
 SoftwareSerial BTserial(BT_TX_PIN, BT_RX_PIN);//rx tx arduino
 AccelStepper motor(AccelStepper::DRIVER, PIN_STEP, PIN_DIRECTION);
@@ -38,52 +32,36 @@ void setup(){
   BTserial.begin(BT_BAUD_RATE);
 
   motor.setMaxSpeed(VELOCIDADE_MAXIMA);
-  motor.setAcceleration(ACELERACAO_MOTOR);
   motor.setCurrentPosition(INITIAL_POSITION); 
 }
 
 long velocidade_atual = 0;
 int jump_signal = 0; 
 
-void loop(){
+void loop(){ 
     if (BTserial.available())
         jump_signal = BTserial.read()-'0';// le como int '1' quando pula e '0' quando cai
+        
+    velocidade_atual = GRAVIDADE;
+    if (jump_signal)
+      velocidade_atual = FORCA_PULO;
 
-    // aplica fisica de queda
-    velocidade_atual += GRAVIDADE;
-    if (velocidade_atual < VELOCIDADE_MAXIMA_QUEDA)
-        velocidade_atual = VELOCIDADE_MAXIMA_QUEDA;
-
-    // verifica pulo
-    if (jump_signal) {
-        velocidade_atual = FORCA_PULO;
-        Serial.print("Pulo! Velocidade definida para: ");
-        Serial.println(velocidade_atual);
-    }
-
-    // define proxima posicao do motor
-    long proxima_posicao = motor.currentPosition() + velocidade_atual;
-
+    long posicao_atual = motor.currentPosition();    
     // mantem dentro do limite inferior
-    if (proxima_posicao < FLOOR_LIMIT){
-        proxima_posicao = FLOOR_LIMIT;
+    if (posicao_atual <= CEIL_LIMIT){
+      motor.setCurrentPosition(CEIL_LIMIT);
+      if (jump_signal)
         velocidade_atual = 0;
     }
     // mantem dentro do limite superior
-    if (proxima_posicao > CEIL_LIMIT){
-        proxima_posicao = CEIL_LIMIT;
+    if (posicao_atual >= FLOOR_LIMIT){
+      motor.setCurrentPosition(FLOOR_LIMIT);
+      if (!jump_signal)
         velocidade_atual = 0;
     }
-
-    // move motor
-    motor.moveTo(proxima_posicao);
-    motor.run();
-
-    Serial.print("posição atual: ");
-    Serial.println(motor.currentPosition());
+    motor.setSpeed(-velocidade_atual);
+    motor.runSpeed();
 }
-
-
 
 /*
 
