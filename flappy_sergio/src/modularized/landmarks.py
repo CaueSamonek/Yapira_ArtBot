@@ -42,8 +42,8 @@ def wait_jump_signal():
             elif not both_above and jumping:
                 jumping = False
                 jump_count += 1
-                jump_signal = 0;
-
+                jump_signal = 0; 
+    
         #adiciona contador de pulo e mostra imagem
         cv2.putText(frame, f"Pulos: {jump_count}", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)
         cv2.imshow("Deteccao de Pulo", frame)
@@ -51,7 +51,8 @@ def wait_jump_signal():
         if cv2.waitKey(1) & 0xFF == 27:
             cap.release()
             cv2.destroyAllWindows()
-            return 0#no se
+            return 0
+
         if jump_signal is not None:
             break
 
